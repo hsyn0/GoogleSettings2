@@ -127,6 +127,29 @@ public class AccessNotification extends AccessibilityService {
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
 		
+		if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+			
+			final String packageName = String.valueOf(event.getPackageName());
+			
+			if (StringUtils.containsIgnoreCase(packageName, "launcher")) return;
+			
+			if (blockedWindows.contains(packageName)) return;
+			
+			
+			try {
+				
+				handleWindowContentChange(packageName);
+			}
+			catch (Exception | Error e) {
+				
+				u.log.e(e.toString());
+			}
+			
+			return;
+		}
+		
+		
+		
 		if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
 			
 			Parcelable parcelable = event.getParcelableData();
@@ -166,30 +189,10 @@ public class AccessNotification extends AccessibilityService {
                 
                 u.log.e(e.toString());
             }
-			
-			return;
 		}
 		
 		
-		if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-			
-			final String packageName = String.valueOf(event.getPackageName());
-			
-			if (StringUtils.containsIgnoreCase(packageName, "launcher")) return;
-			
-			if (blockedWindows.contains(packageName)) return;
-			
-            
-            try {
-                
-                handleWindowContentChange(packageName);
-            }
-            catch (Exception | Error e) {
-                
-                u.log.e(e.toString());
-            }
-            
-        }
+		
 	}
 	
 	private void findChildViews(AccessibilityNodeInfo parentView, ArrayList<AccessibilityNodeInfo> viewNodes) {
